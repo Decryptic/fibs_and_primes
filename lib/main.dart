@@ -34,6 +34,8 @@ class _MainActivityState extends State<MainActivity> {
 
   bool _fibs = true;
   List<BigInt> _sequence = [];
+  ScrollController listViewController = ScrollController();
+  Key listViewKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class _MainActivityState extends State<MainActivity> {
         title: Text(_fibs ? 'Fibs' : 'Primes'),
         actions: <Widget>[
           PopupMenuButton<String>(
-            onSelected: handleSetting,
+            onSelected: _handleSetting,
             itemBuilder: (BuildContext ctx) {
               return {'Fibonacci', 'Primes'}.map((String choice) {
                 return PopupMenuItem<String>(
@@ -58,12 +60,12 @@ class _MainActivityState extends State<MainActivity> {
     );
   }
   
-  void handleSetting(String setting) {
+  void _handleSetting(String setting) {
     switch (setting) {
       case 'Fibonacci':
         if (!_fibs) {
+          _resetList();
           setState(() {
-              _sequence = [];
               _fibs = true;
             }
           );
@@ -71,15 +73,21 @@ class _MainActivityState extends State<MainActivity> {
         break;
       case 'Primes':
         if(_fibs) {
-          _sequence = [];
+          _resetList();
           setState(() {
-              _sequence = [];
               _fibs = false;
             }
           );
         }
         break;
     }
+  }
+  
+  void _resetList() {
+    if (listViewController.hasClients)
+      listViewController.jumpTo(listViewController.position.minScrollExtent);
+    listViewKey = UniqueKey();
+    _sequence = [];
   }
   
   Widget _buildList() {
@@ -90,6 +98,8 @@ class _MainActivityState extends State<MainActivity> {
         }
         return _buildRow(i, _sequence[i]);
       },
+      controller: listViewController,
+      key: listViewKey,
     );
   }
   
@@ -128,7 +138,6 @@ class _MainActivityState extends State<MainActivity> {
   
   bool isPrime(BigInt t) {
     for (var i = BigInt.from(2); i <= t ~/ BigInt.from(2); i += BigInt.from(1)) {
-    print('$t % $i = ${t % i}');
       if (t % i == BigInt.from(0))
         return false;
     }
