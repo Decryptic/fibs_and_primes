@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(const FibsAndPrimes());
 
@@ -15,6 +16,7 @@ class FibsAndPrimes extends StatelessWidget {
         primarySwatch: Colors.red,
       ),
       home: const MainActivity(title: _title),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -29,39 +31,107 @@ class MainActivity extends StatefulWidget {
 }
 
 class _MainActivityState extends State<MainActivity> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  bool _fibs = true;
+  List<BigInt> _sequence = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(_fibs ? 'Fibs' : 'Primes'),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: handleSetting,
+            itemBuilder: (BuildContext ctx) {
+              return {'Fibonacci', 'Primes'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+      body: _buildList(),
+    );
+  }
+  
+  void handleSetting(String setting) {
+    switch (setting) {
+      case 'Fibonacci':
+        if (!_fibs) {
+          setState(() {
+              _sequence = [];
+              _fibs = true;
+            }
+          );
+        }
+        break;
+      case 'Primes':
+        if(_fibs) {
+          _sequence = [];
+          setState(() {
+              _sequence = [];
+              _fibs = false;
+            }
+          );
+        }
+        break;
+    }
+  }
+  
+  Widget _buildList() {
+    return ListView.builder(
+      itemBuilder: (context, i) {
+        if (i >= _sequence.length) {
+          _extend();
+        }
+        return _buildRow(i, _sequence[i]);
+      },
+    );
+  }
+  
+  Widget _buildRow(int i, BigInt e) {
+    return ListTile(
+      title: Text(
+        '$e',
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      subtitle: Text(
+        '${i+1}',
       ),
     );
+  }
+  
+  void _extend() {
+    if (_fibs) {
+      if (_sequence.isEmpty)
+        _sequence = [BigInt.from(0), BigInt.from(1)];
+      for (int i = 0; i < 10; i++) {
+        int l = _sequence.length;
+        _sequence.add(_sequence[l-1] + _sequence[l-2]);
+      }
+    }
+    else {
+      if (_sequence.isEmpty)
+        _sequence = [BigInt.from(1), BigInt.from(2)];
+      for (int i = 0; i < 10; i++) {
+        BigInt next = _sequence.last;
+        do {
+          next += BigInt.from(1);
+        } while (!isPrime(next));
+        _sequence.add(next);
+      }
+    }
+  }
+  
+  bool isPrime(BigInt t) {
+    for (var i = BigInt.from(2); i <= t ~/ BigInt.from(2); i += BigInt.from(1)) {
+    print('$t % $i = ${t % i}');
+      if (t % i == BigInt.from(0))
+        return false;
+    }
+    return true;
   }
 }
