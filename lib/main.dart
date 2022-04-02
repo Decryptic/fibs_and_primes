@@ -125,7 +125,7 @@ class _MainActivityState extends State<MainActivity> {
     }
     else {
       if (_sequence.isEmpty)
-        _sequence = [BigInt.from(1), BigInt.from(2)];
+        _sequence = [BigInt.from(2)];
       for (int i = 0; i < 10; i++) {
         BigInt next = _sequence.last;
         do {
@@ -137,7 +137,8 @@ class _MainActivityState extends State<MainActivity> {
   }
   
   bool isPrime(BigInt t) {
-    for (var i = BigInt.from(2); i <= t ~/ BigInt.from(2); i += BigInt.from(1)) {
+    //for (var i = BigInt.from(2); i <= t ~/ BigInt.from(2); i += BigInt.from(1)) {
+    for (BigInt i in _sequence) {
       if (t % i == BigInt.from(0))
         return false;
     }
