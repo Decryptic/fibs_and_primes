@@ -1,0 +1,9 @@
+Fibs and primes is a free, ad-free and open source app featuring a lazy list of either the Fibonacci or Prime Number sequences. A lazy list is a list whose members aren't calculated until viewed; scroll through the list indefinitely to see the sequence until the app crashes!
+
+The Fibonacci sequence is the set of numbers beginning with {0,1}, and the next number in the sequence is the sum of the previous two numbers. In math, this is defined as (for all Int n >= 0):
+
+fibs 0 = 0
+fibs 1 = 1
+fibs n = fibs (n-1) + fibs (n-2)
+
+Prime numbers are whole numbers whose only two whole factors are 1 and itself. There is no clear cut equation to derive the prime numbers, but the procedure to check whether the next whole number is prime is to see if it is divisible by any lesser prime factors.
