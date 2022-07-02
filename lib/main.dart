@@ -34,8 +34,8 @@ class _MainActivityState extends State<MainActivity> {
 
   bool _fibs = true;
   List<BigInt> _sequence = [];
-  ScrollController listViewController = ScrollController();
-  Key listViewKey = UniqueKey();
+  ScrollController _listViewController = ScrollController();
+  Key _listViewKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +84,9 @@ class _MainActivityState extends State<MainActivity> {
   }
   
   void _resetList() {
-    if (listViewController.hasClients)
-      listViewController.jumpTo(listViewController.position.minScrollExtent);
-    listViewKey = UniqueKey();
+    if (_listViewController.hasClients)
+      _listViewController.jumpTo(_listViewController.position.minScrollExtent);
+    _listViewKey = UniqueKey();
     _sequence = [];
   }
   
@@ -98,8 +98,8 @@ class _MainActivityState extends State<MainActivity> {
         }
         return _buildRow(i, _sequence[i]);
       },
-      controller: listViewController,
-      key: listViewKey,
+      controller: _listViewController,
+      key: _listViewKey,
     );
   }
   
