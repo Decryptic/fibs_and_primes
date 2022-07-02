@@ -96,14 +96,14 @@ class _MainActivityState extends State<MainActivity> {
         if (i >= _sequence.length) {
           _extend();
         }
-        return _buildRow(i, _sequence[i]);
+        return _buildRow(i, _sequence[i], context);
       },
       controller: _listViewController,
       key: _listViewKey,
     );
   }
   
-  Widget _buildRow(int i, BigInt e) {
+  Widget _buildRow(int i, BigInt e, BuildContext context) {
     return ListTile(
       title: Text(
         '$e',
@@ -111,6 +111,15 @@ class _MainActivityState extends State<MainActivity> {
       subtitle: Text(
         '${i+1}',
       ),
+      onLongPress: () => Clipboard.setData(ClipboardData(text: '$e')).then((_) =>
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'copied to clipboard',
+            ),
+          )
+        )
+      )
     );
   }
   
