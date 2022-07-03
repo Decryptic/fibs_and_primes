@@ -119,7 +119,7 @@ class _MainActivityState extends State<MainActivity> {
             ),
           )
         )
-      )
+      ),
     );
   }
   
